@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.dao.TeacherDao">
+
+    <resultMap id="teacherMap" type="com.atguigu.bean.Teacher">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <select id="getById" resultMap="teacherMap">
+        select * from test01 where id = #{id}
+    </select>
+
+</mapper>
