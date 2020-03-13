@@ -1,6 +1,6 @@
-package com.lmc.myspring.ioc;
+package com.lmc.myspring.beans;
 
-import com.lmc.myspring.beans.MyBeanDefinition;
+import com.lmc.myspring.context.MyAbstractApplicationContext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

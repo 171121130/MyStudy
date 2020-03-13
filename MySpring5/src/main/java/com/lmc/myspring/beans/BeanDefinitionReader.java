@@ -1,6 +1,4 @@
-package com.lmc.myspring.ioc;
-
-import com.lmc.myspring.beans.MyBeanDefinition;
+package com.lmc.myspring.beans;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,9 +17,9 @@ import java.util.Properties;
 public class BeanDefinitionReader {
 
     private Properties config = new Properties();
+
     //全类名
     private List<String> registryBeanClasses = new ArrayList<String>();
-
     public BeanDefinitionReader(String[] configLocations) {
         System.out.println("BeanDefinitionReader.BeanDefinitionReader");
         System.out.println("configLocations = " + Arrays.deepToString(configLocations));
@@ -60,6 +58,7 @@ public class BeanDefinitionReader {
     }
 
     //根据全类名，拿到类信息
+
     public List<MyBeanDefinition> loadBeanDefinitions() {
         System.out.println("BeanDefinitionReader.loadBeanDefinitions");
         List<MyBeanDefinition> result = new ArrayList<MyBeanDefinition>();
@@ -82,7 +81,6 @@ public class BeanDefinitionReader {
         }
         return result;
     }
-
     private MyBeanDefinition doCreateBeanDefinition(String factoryBeanName, String name) {
         System.out.println("BeanDefinitionReader.doCreateBeanDefinition");
         System.out.println("factoryBeanName = " + factoryBeanName + ", name = " + name);
@@ -96,5 +94,9 @@ public class BeanDefinitionReader {
         char[] chars = name.toCharArray();
         chars[0] += 32;
         return String.valueOf(chars);
+    }
+
+    public Properties getConfig() {
+        return config;
     }
 }

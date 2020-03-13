@@ -1,6 +1,7 @@
 package com.lmc.myspring.ioc;
 
 
+import com.lmc.myspring.context.MyApplicationContext;
 import org.junit.Test;
 
 /**

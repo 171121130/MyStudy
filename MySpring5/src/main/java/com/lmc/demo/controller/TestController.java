@@ -4,11 +4,14 @@ import com.lmc.demo.service.TestService;
 import com.lmc.myspring.annotation.MyAutowired;
 import com.lmc.myspring.annotation.MyController;
 import com.lmc.myspring.annotation.MyRequestMapping;
+import com.lmc.myspring.annotation.MyRequestParam;
+import com.lmc.myspring.servlet.MyModelView;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @Author Li Meichao
@@ -24,25 +27,13 @@ public class TestController {
     TestService testService;
 
     @MyRequestMapping("/query")
-    public void query(HttpServletRequest req, HttpServletResponse resp) {
+    public MyModelView query(HttpServletRequest req, HttpServletResponse resp, @MyRequestParam("username") String name) {
 
-        if (req.getParameter("username") == null) {
-            try {
-                resp.getWriter().write("param username is null");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
+        HashMap<String, Object> model = new HashMap<String, Object>();
+        model.put("name", name);
+        model.put("data", "\\\\test+test+{}*^.&");
 
-            String paramName = req.getParameter("username");
-            try {
-                resp.getWriter().write("param username is " + paramName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("[INFO-req] New request param username-->" + paramName);
-        }
-
+        return new MyModelView("first", model);
     }
 
     @MyRequestMapping("/listClassName")

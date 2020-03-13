@@ -1,15 +1,16 @@
-package com.lmc.myspring.ioc;
+package com.lmc.myspring.context;
 
 import com.lmc.myspring.annotation.MyAutowired;
 import com.lmc.myspring.annotation.MyController;
 import com.lmc.myspring.annotation.MyService;
-import com.lmc.myspring.beans.MyBeanDefinition;
-import com.lmc.myspring.beans.MyBeanWrapper;
+import com.lmc.myspring.beans.*;
 import com.lmc.myspring.core.MyBeanFactory;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,7 +22,8 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
     private final String[] configLocations;
     private BeanDefinitionReader reader;
     private Map<String, MyBeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<String, MyBeanWrapper>();
-    private Map<String, Object> factoryBeanObjectCache = new ConcurrentHashMap<String, Object>();
+    //TODO 什么情况下使用线程安全map？？？
+    private Map<String, Object> factoryBeanObjectCache = new HashMap<String, Object>();
 
 
     public MyApplicationContext(String... configLocations) {
@@ -162,4 +164,17 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
     public Object getBean(Class<?> beanClass) throws Exception {
         return this.getBean(beanClass.getName());
     }
+
+    public String[] getBeanDefinitionNames() {
+        return super.beanDefinitionMap.keySet().toArray(new String[this.beanDefinitionMap.size()]);
+    }
+
+    public int getBeanDefinitionCount() {
+        return this.beanDefinitionMap.size();
+    }
+
+    public Properties getConfig() {
+        return this.reader.getConfig();
+    }
+
 }

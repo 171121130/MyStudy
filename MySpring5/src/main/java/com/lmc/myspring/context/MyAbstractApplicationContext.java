@@ -1,4 +1,4 @@
-package com.lmc.myspring.ioc;
+package com.lmc.myspring.context;
 
 /**
  * @Author Li Meichao
