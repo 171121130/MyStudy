@@ -5,12 +5,11 @@ package com.lmc.myspring.beans;
  * @Date 2020/3/11
  * @Description
  */
-public class MyBeanPostProcessor {
-    public void postProcessBeforeInitialization(Object instance, String beanName) {
-        System.out.println("MyBeanPostProcessor.postProcessBeforeInitialization");
-    }
+public interface MyBeanPostProcessor {
 
-    public void postProcessAfterInitialization(Object instance, String beanName) {
-        System.out.println("MyBeanPostProcessor.postProcessAfterInitialization");
-    }
+    public Object postProcessBeforeInstantiation(Object instance, String beanName);
+
+    public Object postProcessBeforeInitialization(Object instance, String beanName);
+
+    public Object postProcessAfterInitialization(Object instance, String beanName);
 }

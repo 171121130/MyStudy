@@ -3,14 +3,12 @@ package com.lmc.myspring.context;
 import com.lmc.myspring.annotation.MyAutowired;
 import com.lmc.myspring.annotation.MyController;
 import com.lmc.myspring.annotation.MyService;
+import com.lmc.myspring.aop.MyAnnotationAwareAspectJAutoProxyCreator;
 import com.lmc.myspring.beans.*;
 import com.lmc.myspring.core.MyBeanFactory;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,31 +22,46 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
     private Map<String, MyBeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<String, MyBeanWrapper>();
     //TODO 什么情况下使用线程安全map？？？
     private Map<String, Object> factoryBeanObjectCache = new HashMap<String, Object>();
-
+    private final List<MyBeanPostProcessor> beanPostProcessors = new ArrayList();
 
     public MyApplicationContext(String... configLocations) {
         this.configLocations = configLocations;
         try {
+            register();
             refresh();
+            System.out.println("====启动成功====");
+            System.out.println("测试地址：http://localhost:8080/test/query?username=lmc");
+            System.out.println("测试地址：http://localhost:8080/test/listClassName");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    protected void refresh() throws Exception {
-        System.out.println("MyApplicationContext.refresh");
+    private void register() throws Exception {
         //定位配置文件
         reader = new BeanDefinitionReader(this.configLocations);
         //扫描加载Bean定义
         List<MyBeanDefinition> beanDefinitions = reader.loadBeanDefinitions();
         //注册Bean定义到容器
         doRegisterBeanDefinition(beanDefinitions);
-        //把不延迟加载的类提前初始化
-        doAutoWired();
     }
 
-    private void doAutoWired() {
+    @Override
+    protected void refresh() throws Exception {
+        System.out.println("MyApplicationContext.refresh");
+
+        //先初始化BeanPostProcessor,加到BeanFactory的List
+        registerBeanPostProcessors();
+
+        //把不延迟加载的类提前初始化
+        finishBeanFactoryInitialization();
+    }
+
+    private void registerBeanPostProcessors() {
+        this.beanPostProcessors.add(new MyAnnotationAwareAspectJAutoProxyCreator(this));
+    }
+
+    private void finishBeanFactoryInitialization() {
         System.out.println("MyApplicationContext.doAutoWired");
         for (Map.Entry<String, MyBeanDefinition> stringMyBeanDefinitionEntry : super.beanDefinitionMap.entrySet()) {
             if (!stringMyBeanDefinitionEntry.getValue().isLazyInit()) {
@@ -80,10 +93,15 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
 
         Object instance = null;
         //拿到后置处理器实例
-        MyBeanPostProcessor beanPostProcessor = new MyBeanPostProcessor();
+        MyBeanPostProcessor beanPostProcessor = this.beanPostProcessors.get(0);
         //拿到bean定义
         MyBeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
 
+        //AOP, proxy尝试返回，
+        beanPostProcessor.postProcessBeforeInstantiation(instance, beanName);
+//        shouldSkip ->findCandidateAdvisors() -> buildAspectJAdvisors() ->
+//        Object proxy = this.createProxy(beanClass, beanName, specificInterceptors, targetSource);
+//
         //实例化bean
         instance = instantiateBean(beanDefinition);
 
