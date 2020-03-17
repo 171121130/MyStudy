@@ -16,7 +16,7 @@ public class TestAspect {
     //抽取公共的切入点表达式
     //1、本类引用
     //2、其他的切面引用
-    @MyPointcut("execution(public int com.atguigu.aop.MathCalculator.*(..))")
+    @MyPointcut("public .* com.lmc.demo.service.TestServiceImpl..*(.*)")
     public void pointCut(){};
 
     //@Before在目标方法之前切入；切入点表达式（指定在哪个方法切入）

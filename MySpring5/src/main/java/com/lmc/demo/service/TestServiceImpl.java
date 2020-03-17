@@ -12,6 +12,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public String listClassName() {
+        System.out.println("service to aop");
         return "lmc-test";
     }
 }

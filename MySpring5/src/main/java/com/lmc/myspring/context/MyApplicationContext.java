@@ -98,7 +98,7 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
         MyBeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
 
         //AOP, proxy尝试返回，
-        beanPostProcessor.postProcessBeforeInstantiation(instance, beanName);
+        beanPostProcessor.postProcessBeforeInstantiation(instance, beanDefinition.getBeanClassName());
 //        shouldSkip ->findCandidateAdvisors() -> buildAspectJAdvisors() ->
 //        Object proxy = this.createProxy(beanClass, beanName, specificInterceptors, targetSource);
 //
@@ -113,7 +113,15 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
         //初始化注入属性
         beanPostProcessor.postProcessBeforeInitialization(instance, beanName);
         populateBean(beanName, instance);
-        beanPostProcessor.postProcessAfterInitialization(instance, beanName);
+        Object proxy = beanPostProcessor.postProcessAfterInitialization(instance, beanDefinition.getBeanClassName());
+
+        if (proxy != null) {
+            instance = proxy;
+            //包装实例
+            beanWrapper = new MyBeanWrapper(instance);
+            //存储cache
+            this.factoryBeanInstanceCache.put(beanName, beanWrapper);
+        }
 
         //返回cache包装实例
         return this.factoryBeanInstanceCache.get(beanName).getWrappedInstance();
