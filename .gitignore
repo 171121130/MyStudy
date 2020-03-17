@@ -1,3 +1,6 @@
 /MySSM/out/
 /MySpringMVC/target/
 /.idea/
+/MySSM/web/WEB-INF/lib/
+/MySpringMVC/.idea/
+/MySSM/.idea/
